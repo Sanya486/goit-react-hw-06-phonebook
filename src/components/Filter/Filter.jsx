@@ -1,22 +1,27 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getFilter } from 'redux/selectors';
+import { filter } from 'redux/store';
 
 import { Lable, Input } from './Filter.styled';
 
-const Filter = ({text, onChange}) => {
+const Filter = () => {
+  const dispatch = useDispatch();
+  const filterRedux = useSelector(getFilter);
+
+  const onFilterChange = e => {
+    const value = e.target.value.toLowerCase();
+    dispatch(filter(value));
+  };
   return (
     <div>
-          <Lable style={{ width: 200 }}>
+      <Lable style={{ width: 200 }}>
         Find contacts by name
-        <Input type="text" value={text} onChange={onChange} />
+        <Input type="text" value={filterRedux} onChange={onFilterChange} />
       </Lable>
     </div>
   );
-}
-
-Filter.propTypes = {
-  text: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
 };
 
-export default Filter
+export default Filter;

@@ -1,9 +1,27 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
+
+import { useSelector, useDispatch } from 'react-redux';
+import { getContacts, getFilter } from 'redux/selectors';
+import {deleteContact as deleteContactRedux} from 'redux/store';
 import { Button, Li } from './Contact.styled';
 
-const Contact = ({ contacts, deleteContact }) => {
+const Contact = () => {
+  const dispatch = useDispatch();
+  const contactsRedux = useSelector(getContacts);
+  const filterRedux = useSelector(getFilter);
+  const contacts = filterRedux === '' ? contactsRedux : onActiveFilter();
+
+  const deleteContact = id => {
+    dispatch(deleteContactRedux(id));
+  };
+
+  function onActiveFilter  () {
+    return contactsRedux.filter(contact =>
+      contact.name.toLowerCase().includes(filterRedux)
+    );
+  };
+
   return (
     <>
       {contacts.map(({ id, name, number }) => (
@@ -18,17 +36,6 @@ const Contact = ({ contacts, deleteContact }) => {
       ))}
     </>
   );
-};
-
-Contact.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-  deleteContact: PropTypes.func.isRequired,
 };
 
 export default Contact
